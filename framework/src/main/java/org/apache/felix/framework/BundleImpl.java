@@ -107,6 +107,7 @@ class BundleImpl implements Bundle
             catch (Exception ex)
             {
                 getFramework().getLogger().log(
+                    this,
                     Logger.LOG_ERROR,
                     "Unable to close archive revisions.", ex);
             }
@@ -153,7 +154,7 @@ class BundleImpl implements Bundle
     {
         if (isExtension() && (getFramework().getState() != Bundle.STOPPING))
         {
-            getFramework().getLogger().log(Logger.LOG_WARNING,
+            getFramework().getLogger().log(this, Logger.LOG_WARNING,
                 "Framework restart on extension bundle refresh not implemented.");
         }
         else
@@ -222,6 +223,7 @@ class BundleImpl implements Bundle
         catch (Exception ex)
         {
             getFramework().getLogger().log(
+                this,
                 Logger.LOG_ERROR,
                 "Error getting the identifier from bundle archive.",
                 ex);
@@ -523,6 +525,7 @@ class BundleImpl implements Bundle
         catch (Exception ex)
         {
             getFramework().getLogger().log(
+                this,
                 Logger.LOG_ERROR,
                 "Error reading last modification time from bundle archive.",
                 ex);
@@ -539,6 +542,7 @@ class BundleImpl implements Bundle
         catch (Exception ex)
         {
             getFramework().getLogger().log(
+                this,
                 Logger.LOG_ERROR,
                 "Error writing last modification time to bundle archive.",
                 ex);
@@ -566,6 +570,7 @@ class BundleImpl implements Bundle
         catch (Exception ex)
         {
             getFramework().getLogger().log(
+                this,
                 Logger.LOG_ERROR,
                 "Error getting location from bundle archive.",
                 ex);
@@ -728,6 +733,7 @@ class BundleImpl implements Bundle
         catch (Exception ex)
         {
             getFramework().getLogger().log(
+                this,
                 Logger.LOG_ERROR,
                 "Error reading persistent state from bundle archive.",
                 ex);
@@ -743,7 +749,7 @@ class BundleImpl implements Bundle
         }
         catch (Exception ex)
         {
-            getFramework().getLogger().log(Logger.LOG_ERROR,
+            getFramework().getLogger().log(this, Logger.LOG_ERROR,
                 "Error writing persistent state to bundle archive.",
                 ex);
         }
@@ -758,6 +764,7 @@ class BundleImpl implements Bundle
         catch (Exception ex)
         {
             getFramework().getLogger().log(
+                this,
                 Logger.LOG_ERROR,
                 "Error writing persistent state to bundle archive.",
                 ex);
@@ -773,6 +780,7 @@ class BundleImpl implements Bundle
         catch (Exception ex)
         {
             getFramework().getLogger().log(
+                this,
                 Logger.LOG_ERROR,
                 "Error writing persistent state to bundle archive.",
                 ex);
@@ -787,6 +795,7 @@ class BundleImpl implements Bundle
         catch (Exception ex)
         {
             getFramework().getLogger().log(
+                this,
                 Logger.LOG_ERROR,
                 "Error writing persistent state to bundle archive.",
                 ex);
@@ -802,6 +811,7 @@ class BundleImpl implements Bundle
         catch (Exception ex)
         {
             getFramework().getLogger().log(
+                this,
                 Logger.LOG_ERROR,
                 "Error reading start level from bundle archive.",
                 ex);
@@ -818,6 +828,7 @@ class BundleImpl implements Bundle
         catch (Exception ex)
         {
             getFramework().getLogger().log(
+                this,
                 Logger.LOG_ERROR,
                 "Error writing start level to bundle archive.",
                 ex);
