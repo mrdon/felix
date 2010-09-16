@@ -77,7 +77,7 @@ public class BootLoaderTest extends TestCase
             + "Bundle-Version: 1.1.0\n"
             + "Bundle-ManifestVersion: 2\n"
             + "Export-Package: boot.test";
-        File bundle = createBundle(mf);
+        File bundle = BundleHelper.createBundle(mf);
 
         Framework f = new Felix(params);
         f.init();
@@ -102,18 +102,5 @@ public class BootLoaderTest extends TestCase
             }
             throw new ClassNotFoundException();
         }
-    }
-
-    private static File createBundle(String manifest) throws IOException
-    {
-        File f = File.createTempFile("felix-bundle", ".jar");
-        f.deleteOnExit();
-
-        Manifest mf = new Manifest(new ByteArrayInputStream(manifest.getBytes("utf-8")));
-        mf.getMainAttributes().putValue("Manifest-Version", "1.0");
-        JarOutputStream os = new JarOutputStream(new FileOutputStream(f), mf);
-        os.close();
-
-        return f;
     }
 }
