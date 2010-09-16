@@ -523,7 +523,8 @@ public class ModuleImpl implements Module
             }
             catch (Exception ex)
             {
-                m_logger.log(m_bundle, Logger.LOG_ERROR, "Unable to get module class path.", ex);
+                m_logger.log(
+                    m_bundle, Logger.LOG_ERROR, "Unable to get module class path.", ex);
             }
         }
         return m_contentPath;

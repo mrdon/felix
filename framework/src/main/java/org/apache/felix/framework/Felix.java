@@ -1330,12 +1330,16 @@ public class Felix extends BundleImpl implements Framework
                 catch (Throwable th)
                 {
                     rethrow = th;
-                    m_logger.log(impl, Logger.LOG_ERROR, "Error starting/stopping bundle.", th);
+                    m_logger.log(
+                        impl,
+                        Logger.LOG_ERROR, "Error starting/stopping bundle.", th);
                 }
             }
             else
             {
-                m_logger.log(impl, Logger.LOG_WARNING, "Bundle start level must be greater than zero.");
+                m_logger.log(
+                    impl,
+                    Logger.LOG_WARNING, "Bundle start level must be greater than zero.");
             }
         }
         finally
@@ -1989,7 +1993,8 @@ public class Felix extends BundleImpl implements Framework
                     }
                     catch (Exception busted)
                     {
-                        m_logger.log(bundle, Logger.LOG_ERROR, "Unable to rollback.", busted);
+                        m_logger.log(
+                            bundle, Logger.LOG_ERROR, "Unable to rollback.", busted);
                     }
 
                     throw ex;
@@ -1997,7 +2002,8 @@ public class Felix extends BundleImpl implements Framework
             }
             catch (Throwable ex)
             {
-                m_logger.log(bundle, Logger.LOG_ERROR, "Unable to update the bundle.", ex);
+                m_logger.log(
+                    bundle, Logger.LOG_ERROR, "Unable to update the bundle.", ex);
                 rethrow = ex;
             }
 
@@ -3957,6 +3963,7 @@ public class Felix extends BundleImpl implements Framework
                         "Unable to acquire global lock for resolve.", rootModule, null);
                 }
 
+                Map<Module, List<Wire>> wireMap = null;
                 try
                 {
                     BundleImpl bundle = (BundleImpl) rootModule.getBundle();
@@ -3984,8 +3991,7 @@ public class Felix extends BundleImpl implements Framework
                             try
                             {
                                 // Resolve the module.
-                                Map<Module, List<Wire>> wireMap =
-                                    m_resolver.resolve(m_resolverState, newRootModule);
+                                wireMap = m_resolver.resolve(m_resolverState, newRootModule);
 
                                 // Mark all modules as resolved.
                                 markResolvedModules(wireMap);
@@ -4016,6 +4022,8 @@ public class Felix extends BundleImpl implements Framework
                     // Always release the global lock.
                     releaseGlobalLock();
                 }
+
+                fireResolvedEvents(wireMap);
             }
         }
 
@@ -4037,6 +4045,7 @@ public class Felix extends BundleImpl implements Framework
                         "Unable to acquire global lock for resolve.", module, null);
                 }
 
+                Map<Module, List<Wire>> wireMap = null;
                 try
                 {
                     // Double check to make sure that someone hasn't beaten us to
@@ -4052,8 +4061,7 @@ public class Felix extends BundleImpl implements Framework
                         }
                     }
 
-                    Map<Module, List<Wire>> wireMap =
-                        m_resolver.resolve(m_resolverState, module, pkgName);
+                    wireMap = m_resolver.resolve(m_resolverState, module, pkgName);
 
                     if ((wireMap != null) && wireMap.containsKey(module))
                     {
@@ -4070,7 +4078,10 @@ public class Felix extends BundleImpl implements Framework
                             wires.addAll(module.getWires());
                             wires.add(candidateWire);
                             ((ModuleImpl) module).setWires(wires);
-m_logger.log(module.getBundle(), Logger.LOG_DEBUG, "DYNAMIC WIRE: " + wires.get(wires.size() - 1));
+                            m_logger.log(
+                                module.getBundle(),
+                                Logger.LOG_DEBUG,
+                                "DYNAMIC WIRE: " + wires.get(wires.size() - 1));
                         }
                     }
                 }
@@ -4079,6 +4090,8 @@ m_logger.log(module.getBundle(), Logger.LOG_DEBUG, "DYNAMIC WIRE: " + wires.get(
                     // Always release the global lock.
                     releaseGlobalLock();
                 }
+
+                fireResolvedEvents(wireMap);
             }
 
             return candidateWire;
@@ -4197,7 +4210,6 @@ m_logger.log(module.getBundle(), Logger.LOG_DEBUG, "DYNAMIC WIRE: " + wires.get(
             BundleImpl bundle = (BundleImpl) module.getBundle();
 
             // Lock the bundle first.
-            boolean fire = false;
             try
             {
                 // Acquire bundle lock.
@@ -4220,7 +4232,6 @@ m_logger.log(module.getBundle(), Logger.LOG_DEBUG, "DYNAMIC WIRE: " + wires.get(
                     else
                     {
                         setBundleStateAndNotify(bundle, Bundle.RESOLVED);
-                        fire = true;
                     }
                 }
             }
@@ -4228,11 +4239,27 @@ m_logger.log(module.getBundle(), Logger.LOG_DEBUG, "DYNAMIC WIRE: " + wires.get(
             {
                 releaseBundleLock(bundle);
             }
+        }
 
-            // Fire event while not holding the bundle lock.
-            if (fire)
+        private void fireResolvedEvents(Map<Module, List<Wire>> wireMap)
+        {
+            if (wireMap != null)
             {
-                fireBundleEvent(BundleEvent.RESOLVED, bundle);
+                Iterator<Entry<Module, List<Wire>>> iter = wireMap.entrySet().iterator();
+                // Iterate over the map to fire necessary RESOLVED events.
+                while (iter.hasNext())
+                {
+                    Entry<Module, List<Wire>> entry = iter.next();
+                    Module module = entry.getKey();
+
+                    // Fire RESOLVED events for all fragments.
+                    List<Module> fragments = ((ModuleImpl) module).getFragments();
+                    for (int i = 0; (fragments != null) && (i < fragments.size()); i++)
+                    {
+                        fireBundleEvent(BundleEvent.RESOLVED, fragments.get(i).getBundle());
+                    }
+                    fireBundleEvent(BundleEvent.RESOLVED, module.getBundle());
+                }
             }
         }
     }

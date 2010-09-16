@@ -114,7 +114,9 @@ public class Logger implements ServiceListener
         _log(bundle, null, level, msg, throwable);
     }
 
-    protected void doLog(Bundle bundle, ServiceReference sr, int level, String msg, Throwable throwable)
+    protected void doLog(
+        Bundle bundle, ServiceReference sr, int level,
+        String msg, Throwable throwable)
     {
         String s = (sr == null) ? null : "SvcRef " + sr;
         s = (s == null) ? null : s + " Bundle '" + bundle.getBundleId() + "'";
@@ -148,7 +150,9 @@ public class Logger implements ServiceListener
         }
     }
 
-    private void _log(Bundle bundle, ServiceReference sr, int level, String msg, Throwable throwable)
+    private void _log(
+        Bundle bundle, ServiceReference sr, int level,
+        String msg, Throwable throwable)
     {
         // Save our own copy just in case it changes. We could try to do
         // more conservative locking here, but let's be optimistic.

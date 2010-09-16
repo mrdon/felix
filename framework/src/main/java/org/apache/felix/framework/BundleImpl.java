@@ -203,7 +203,8 @@ class BundleImpl implements Bundle
 
         if (sm != null)
         {
-           ((SecurityManager) sm).checkPermission(new AdminPermission(this, AdminPermission.CONTEXT));
+           ((SecurityManager) sm).checkPermission(
+               new AdminPermission(this, AdminPermission.CONTEXT));
         }
 
         return m_context;
@@ -373,8 +374,8 @@ class BundleImpl implements Bundle
 
             if (!localize)
             {
-                // If localization is not needed, just cache the headers and return them as-is
-                // Not sure if this is useful
+                // If localization is not needed, just cache the headers and return
+                // them as-is. Not sure if this is useful
                 updateHeaderCache(locale, headers);
             }
             else
@@ -388,7 +389,8 @@ class BundleImpl implements Bundle
 
                 // Create ordered list of modules to search for localization
                 // property resources.
-                List moduleList = createLocalizationModuleList((ModuleImpl) getCurrentModule());
+                List moduleList = createLocalizationModuleList(
+                    (ModuleImpl) getCurrentModule());
 
                 // Create ordered list of files to load properties from
                 List resourceList = createLocalizationResourceList(basename, locale);
@@ -407,7 +409,8 @@ class BundleImpl implements Bundle
                             found = true;
                             try
                             {
-                                mergedProperties.load(temp.openConnection().getInputStream());
+                                mergedProperties.load(
+                                    temp.openConnection().getInputStream());
                             }
                             catch (IOException ex)
                             {
@@ -591,8 +594,8 @@ class BundleImpl implements Bundle
         {
             try
             {
-                ((SecurityManager) sm).checkPermission(new AdminPermission(this,
-                    AdminPermission.RESOURCE));
+                ((SecurityManager) sm).checkPermission(
+                    new AdminPermission(this, AdminPermission.RESOURCE));
             }
             catch (Exception e)
             {
@@ -611,8 +614,8 @@ class BundleImpl implements Bundle
         {
             try
             {
-                ((SecurityManager) sm).checkPermission(new AdminPermission(this,
-                    AdminPermission.RESOURCE));
+                ((SecurityManager) sm).checkPermission(
+                    new AdminPermission(this, AdminPermission.RESOURCE));
             }
             catch (Exception e)
             {
@@ -691,8 +694,8 @@ class BundleImpl implements Bundle
             {
                 try
                 {
-                    ((SecurityManager) sm).checkPermission(new ServicePermission(
-                        refs[i], ServicePermission.GET));
+                    ((SecurityManager) sm).checkPermission(
+                        new ServicePermission(refs[i], ServicePermission.GET));
 
                     result.add(refs[i]);
                 }
